@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonAnalyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <form class="decor">
+        <div class="form-left-decoration"></div>
+        <div class="form-right-decoration"></div>
+        <div class="circle"></div>
+        <div class="form-inner">
+            <h3>Введите ваш текст для анализа тональности</h3>
+            <textarea id=text placeholder="Сообщение..." rows="3"></textarea>
+            <button type="button" onclick="analyzeSentiment()">Анализировать</button>
+            <div id="result"></div>
+        </div>
+    </form>
+
+    <script>
+        function analyzeSentiment() {
+            const text = document.getElementById('text').value;
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({text: text})
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.textContent = data.sentiment;
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = 
+                    data.sentiment.includes('Позитивный') ? '#e6f2ca' :
+                    data.sentiment.includes('Нейтральный') ? '#E9EFF6' : '#f0b7b7';
+            });
+        }
+    </script>
+</body>
+</html>
